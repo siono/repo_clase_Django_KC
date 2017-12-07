@@ -5,6 +5,12 @@ class Category(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True) # the value of description field is optional
 
+    def __str__(self): # este método tiene 0 parametros
+        """
+        Devuelve la representación de un objeto como un string
+
+        """
+        return self.name
 
 class Movie(models.Model):
 
@@ -18,6 +24,8 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) # saves the date when the object is created
     modified_at = models.DateTimeField(auto_now_add=True) # saves the date when the object is update
 
+    def __str__(self):  # este método tiene 0 parametros
 
+        return self.title
 
 
