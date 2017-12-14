@@ -17,3 +17,14 @@ def home(request):
 
     context = {'movies': latest_movies}
     return render(request, "home.html",context)
+
+def movie_detail(request, pk):
+    possible_movies = Movie.objects.filter(pk=pk).select_related("category")  #Decimos a Django que nos traiga la consulta relacionada de la categoria haciendo solo una peticion con JOIN
+    if len(possible_movies) == 0:
+        #la longitud es 0 -> la pelicula no existe
+        return render(request, "404.html", status = 404)
+    else:
+        movie = possible_movies[0]
+        context = {'movie': movie }
+        return render(request, "movie_detail.html", context)
+
