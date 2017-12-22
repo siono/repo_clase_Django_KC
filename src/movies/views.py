@@ -1,6 +1,10 @@
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
+from django.views import View
 
+from movies.forms import MovieForm
 from movies.models import Movie
 
 
@@ -28,3 +32,21 @@ def movie_detail(request, pk):
         context = {'movie': movie }
         return render(request, "movie_detail.html", context)
 
+class CreateMovieView(View):
+
+    def get(self, request):
+        form = MovieForm()
+        return render(request, "movie_form.html", {'form': form})
+
+    def post(self, request):
+        form = MovieForm(request.POST)
+        if form.is_valid():
+            movie = form.save()
+            #vaciamos el formulario
+            form = MovieForm()
+            url = reverse("movie_detail_page", args=[movie.pk]) #reverse genera url pasandole el tipo de URL
+            message = "Movie created successfully!"
+            message += '<a href="{0}">View</a>'.format(url)
+            #enviamos mensaje de exito con un enlace a la pelicula que acabamos de cr
+            messages.success(request, message)
+        return render(request, "movie_form.html", {'form':form})
