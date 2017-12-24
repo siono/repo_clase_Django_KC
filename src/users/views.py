@@ -21,7 +21,8 @@ class LoginView(View):
             authenticate_user = authenticate(username=username, password=password)
             if authenticate_user and authenticate_user.is_active:
                 django_login(request, authenticate_user)
-                return redirect('home_page')
+                redirect_to = request.GET.get("next", "home_page") # si no existe el parametro next devolvemos el segundo parametro en este caso home_page
+                return redirect(redirect_to)
             else:
                 form.add_error(None, "Usuario incorrecto o inactivo")
                 #messages.error(request, "Usuario incorrecto o inactivo")
