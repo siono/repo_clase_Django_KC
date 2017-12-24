@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 class Category(models.Model):
@@ -13,6 +14,8 @@ class Category(models.Model):
         return self.name
 
 class Movie(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE) #on_delete=models.CASCADE = Si se borra el usuario se borra todas las peliculas que haya realizado.
 
     title = models.CharField(max_length=150)
     sumary = models.TextField()

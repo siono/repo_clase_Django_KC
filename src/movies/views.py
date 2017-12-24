@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
+from django.views.generic import ListView
 
 from movies.forms import MovieForm
 from movies.models import Movie
@@ -44,7 +45,9 @@ class CreateMovieView(LoginRequiredMixin,View):
         return render(request, "movie_form.html", {'form': form})
 
     def post(self, request):
-        form = MovieForm(request.POST)
+        movie = Movie()
+        movie.user = request.user #asignamos a la pelicula el usuario autenticado
+        form = MovieForm(request.POST, instance=movie) #le pasamos al movieForm la insatancia pelicula con el usuario autenticado
         if form.is_valid():
             movie = form.save()
             #vaciamos el formulario
@@ -55,3 +58,13 @@ class CreateMovieView(LoginRequiredMixin,View):
             #enviamos mensaje de exito con un enlace a la pelicula que acabamos de cr
             messages.success(request, message)
         return render(request, "movie_form.html", {'form':form})
+
+class MyMoviesView(ListView):
+
+    model = Movie
+    template_name = "my_movies.html"
+
+    #como queremos filtrar solo por las peliculas que hemos creado con nuestro usuario redefinimos get_queryset ya que es la funcion que utiliza en el workflow de una listview : https://docs.djangoproject.com/en/2.0/ref/class-based-views/generic-display/
+    def get_queryset(self):
+        queryset = super(MyMoviesView,self).get_queryset() #llamamos
+        return queryset.filter(user = self.request.user)
