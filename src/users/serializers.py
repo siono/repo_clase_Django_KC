@@ -12,7 +12,7 @@ class UserSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
 
-    def validate_username(self, data): #para hacer una validación mas especifica ponemos una funcion validate_<campo>
+    def validate_username(self, data): #para hacer una validación mas especifica ponemos una funcion validate_<campo>. si es una validación 'global' debemos crear una funcion validate
         if User.objects.filter(username=data).exists():
             raise ValidationError("User already exists") #en Django se lanza las excepciones con la palabra reservada 'raise'
         return data
