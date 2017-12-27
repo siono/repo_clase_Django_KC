@@ -5,6 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from users.permissions import UsersPermission
 from users.serializers import UserSerializer, UsersListSerializer
 
 
@@ -19,6 +20,8 @@ class HelloWorld(APIView):
 
 
 class UsersListAPI(APIView):
+
+    permission_classes = [UsersPermission]
 
     def get(self,request):
         users = User.objects.all()
@@ -39,13 +42,17 @@ class UsersListAPI(APIView):
 
 class UserDetailAPI(APIView):
 
+    permission_classes = [UsersPermission]
+
     def get(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request,user) #como hemos implementado manualmente los metodos tenemos que checkear los metodos de forma manual tambien
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
     def put(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user)
         serializer = UserSerializer(user,data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -55,6 +62,7 @@ class UserDetailAPI(APIView):
 
     def delete(self, request, pk):
         user = get_object_or_404(User, pk=pk)
+        self.check_object_permissions(request, user)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
