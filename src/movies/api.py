@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 
 from movies.models import Movie
+from movies.permissions import MoviesPermission
 from movies.serializers import MovieSerializer, MoviesListSerializer
 
 
@@ -25,6 +26,7 @@ class MoviesListAPI(ListCreateAPIView):
 class MovieDetailAPI(RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    permission_classes = [MoviesPermission]
 
     # para que un usuario no pueda actualizar o borrar peliculas de otro usuario
     def perform_create(self, serializer):
