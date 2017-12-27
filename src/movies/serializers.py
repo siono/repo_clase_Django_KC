@@ -12,6 +12,8 @@ class MoviesListSerializer(serializers.ModelSerializer):
 
 class MovieSerializer(serializers.ModelSerializer):
 
+    user = serializers(read_only=True)
+
     class Meta:
         model = Movie
         fields = "__all__"
