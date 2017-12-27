@@ -1,13 +1,12 @@
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
+
 
 from movies.models import Movie
 from movies.serializers import MovieSerializer
 
+#creamos el endpoint de creación y listado de peliculas utilizando listas genericas
+class MoviesListAPI(ListCreateAPIView):
 
-class MoviesListAPI(APIView):
-
-    def get(self,request):
-        movies = Movie.objects.all()
-        serializer = MovieSerializer(movies, many=True)
-        return Response(serializer.data)
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
