@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -21,8 +22,11 @@ class UsersListAPI(APIView):
 
     def get(self,request):
         users = User.objects.all()
-        serializer = UsersListSerializer(users, many=True)
-        return Response(serializer.data)
+        paginator = PageNumberPagination()
+        #paginamos el queryset de forma manual
+        paginated_user = paginator.paginate_queryset(users,request)
+        serializer = UsersListSerializer(paginated_user, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self,request):
         serializer = UserSerializer(data=request.data)
