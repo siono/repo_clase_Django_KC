@@ -1,11 +1,10 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-
-from movies.models import Movie
-from movies.permissions import MoviesPermission
-from movies.serializers import MovieSerializer, MoviesListSerializer
+from movies.models import Movie, Category
+from movies.permissions import MoviesPermission, CategoriesPermission
+from movies.serializers import MovieSerializer, MoviesListSerializer, CategorySerializer
 
 
 #creamos el endpoint de creación y listado de peliculas utilizando listas genericas
@@ -31,3 +30,11 @@ class MovieDetailAPI(RetrieveUpdateDestroyAPIView):
     # para que un usuario no pueda actualizar o borrar peliculas de otro usuario
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+#endpoint para las categorias con ModelViewset
+class CategoryViewSet(ModelViewSet):
+
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [CategoriesPermission]
+

@@ -14,12 +14,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import SimpleRouter
 
-from movies.api import MoviesListAPI, MovieDetailAPI
+from movies.api import MoviesListAPI, MovieDetailAPI, CategoryViewSet
 from movies.views import movie_detail, home, CreateMovieView, MyMoviesView
 from users.api import HelloWorld, UsersListAPI, UserDetailAPI
 from users.views import logout, LoginView
+
+router = SimpleRouter()
+router.register('categories', CategoryViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,5 +40,7 @@ urlpatterns = [
     path('api/1.0/users/',UsersListAPI.as_view(),name="api_users_list"),
 
     path('api/1.0/movies/<int:pk>',MovieDetailAPI.as_view(),name="api_movies_detail"),
-    path('api/1.0/movies/',MoviesListAPI.as_view(),name="api_movies_list")
+    path('api/1.0/movies/',MoviesListAPI.as_view(),name="api_movies_list"),
+
+    path('api/1.0/', include(router.urls))
 ]
