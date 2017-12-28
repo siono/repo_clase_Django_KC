@@ -1,3 +1,4 @@
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
@@ -12,6 +13,11 @@ class MoviesListAPI(ListCreateAPIView):
 
     queryset = Movie.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly] #puede listar cualquier usuario pero solo puede crear peliculas los usuarios autenticados
+
+    #para habilitar la busqueda, ordenación
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ["title","director_name","category__name","sumary"]
+    ordering_fields = ["title", "release_date", "created_at", "modified_at", "rating", "director_name", "category"]
 
     #como al crear una pelicula necesito que coja todos los campos nos redifinos la funcion
     def get_serializer_class(self):
